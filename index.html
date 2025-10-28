@@ -1,43 +1,181 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>SGMS — Smart Growth Management System</title>
+  <meta name="description" content="SGMS — cross-platform collaboration, courses and project chat.">
   <style>
-    body { margin:0; font-family:-apple-system,system-ui,"Segoe UI",Roboto,Arial; background:#f8fafc; color:#111; line-height:1.5 }
-    header { text-align:center; padding:60px 20px 20px }
-    h1 { font-size:2rem; margin:0; color:#0f172a }
-    h2 { color:#334155; margin-top:1.5em }
-    p { max-width:700px; margin:8px auto; color:#334155 }
-    main { text-align:center; padding:20px }
-    a.btn { display:inline-block; margin:8px; padding:10px 18px; border-radius:8px; background:#0b69ff; color:#fff; text-decoration:none; transition:.2s }
-    a.btn:hover { background:#0758d1 }
-    footer { margin-top:50px; font-size:13px; color:#64748b }
+    :root{
+      --bg1:#0f172a; --bg2:#0b69ff; --accent:#06b6d4; --muted:#94a3b8; --card:#ffffff;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      color: #0f172a;
+      background: linear-gradient(180deg,#f8fafc 0%, #eef2ff 100%);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:32px;
+    }
+
+    .wrap{max-width:1100px;width:100%;display:grid;grid-template-columns:1fr 420px;gap:28px;align-items:center}
+    @media (max-width:880px){ .wrap{grid-template-columns:1fr; padding:12px} .hero-visual{order:-1} }
+
+    /* hero left */
+    .hero{
+      padding:28px 28px;
+    }
+    .badge{
+      display:inline-block;background:#e6f0ff;color:var(--bg2);padding:6px 10px;border-radius:999px;font-weight:600;font-size:13px;margin-bottom:14px;
+      box-shadow:0 6px 20px rgba(11,105,255,0.08);
+    }
+    h1{font-size:38px;margin:8px 0 6px;line-height:1.02}
+    p.lead{color:var(--muted);margin:12px 0 22px;max-width:62ch}
+
+    .actions{display:flex;gap:12px;flex-wrap:wrap;}
+    .btn{
+      display:inline-flex;align-items:center;gap:10px;padding:11px 16px;border-radius:12px;text-decoration:none;font-weight:600;
+      transition:transform .18s ease, box-shadow .18s ease;
+    }
+    .btn-primary{background:linear-gradient(90deg,var(--bg2),#0758d1);color:#fff;box-shadow:0 8px 30px rgba(11,105,255,0.14)}
+    .btn-outline{border:1px solid rgba(15,23,42,0.06);background:#fff;color:var(--bg2)}
+    .btn:focus{outline:3px solid rgba(11,105,255,0.14);outline-offset:3px}
+    .btn:hover{transform:translateY(-4px)}
+
+    /* right card/visual */
+    .hero-visual{position:relative;padding:28px;border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,0.9),#ffffff);box-shadow:0 14px 40px rgba(12,20,25,0.06)}
+    .logo-wrap{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+    .logo-box{width:72px;height:72px;display:flex;align-items:center;justify-content:center;border-radius:14px;background:linear-gradient(135deg,var(--bg2),#06b6d4);box-shadow:0 10px 30px rgba(11,105,255,0.12)}
+    .logo-title{font-weight:700;font-size:18px;color:#0f172a}
+
+    /* animated gradient hero backdrop inside card */
+    .hero-canvas{position:relative;height:220px;border-radius:12px;overflow:hidden;margin-top:10px;background:
+      radial-gradient(600px 200px at 10% 10%, rgba(11,105,255,0.12), transparent 6%),
+      radial-gradient(500px 160px at 95% 85%, rgba(6,182,212,0.10), transparent 8%);
+    }
+
+    /* floating sample cards */
+    .floating-grid{position:absolute;inset:14px;display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:12px}
+    .card-sample{background:#fff;border-radius:10px;padding:10px;box-shadow:0 8px 20px rgba(12,20,25,0.06);transform-origin:center;opacity:.98}
+    .card-sample h4{margin:0;font-size:13px}
+    .card-sample p{margin:6px 0 0;font-size:12px;color:var(--muted)}
+
+    /* small motion */
+    @keyframes floatA {0%{transform:translateY(0) rotate(0);}50%{transform:translateY(-8px) rotate(-1deg);}100%{transform:translateY(0) rotate(0);} }
+    @keyframes floatB {0%{transform:translateY(0) rotate(0);}50%{transform:translateY(-6px) rotate(1deg);}100%{transform:translateY(0) rotate(0);} }
+    .card-sample:nth-child(1){animation:floatA 5s ease-in-out infinite}
+    .card-sample:nth-child(2){animation:floatB 4.6s ease-in-out infinite}
+    .card-sample:nth-child(3){animation:floatB 4.8s ease-in-out infinite}
+    .card-sample:nth-child(4){animation:floatA 5.2s ease-in-out infinite}
+
+    /* logo svg animation */
+    .logo-svg { width:46px; height:46px; display:block; transform-origin:center; animation:logo-breathe 3s ease-in-out infinite; }
+    @keyframes logo-breathe {0%{transform:scale(1)}50%{transform:scale(1.06)}100%{transform:scale(1)}}
+
+    /* subtle gradient background animation for page */
+    .bg-blob{position:fixed;inset:auto  -20% -40% -40%;width:800px;height:800px;filter:blur(80px);opacity:.12;pointer-events:none;background:linear-gradient(45deg,#0b69ff,#06b6d4);transform:translateZ(0);animation:blobMove 12s linear infinite}
+    @keyframes blobMove {0%{transform:translateY(0) rotate(0)}50%{transform:translateY(-40px) rotate(30deg)}100%{transform:translateY(0) rotate(0)}}
+
+    /* footer small */
+    .meta{font-size:13px;color:var(--muted);margin-top:10px}
+
+    /* accessibility */
+    a.sr{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
   </style>
 </head>
 <body>
-  <header>
-    <h1>SGMS</h1>
-    <p>Smart Growth Management System — Cross-platform collaboration and learning tool</p>
-  </header>
+  <div class="bg-blob" aria-hidden="true"></div>
 
-  <main>
-    <h2>About</h2>
-    <p>SGMS helps teams and learners manage courses, analyze data, and collaborate efficiently in real time. Built with Flutter for Android, Web, and Desktop.</p>
+  <div class="wrap" role="main">
+    <section class="hero" aria-labelledby="sgms-heading">
+      <span class="badge">Beta • Cross-platform</span>
+      <h1 id="sgms-heading">SGMS — Smart Growth Management System</h1>
+      <p class="lead">Collaborate on courses, manage projects, and chat with teammates — all from one cross-platform app built with Flutter.</p>
 
-    <h2>Get in touch</h2>
-    <p>For support, account requests, or licensing inquiries, contact:<br>
-      <a href="mailto:hima.azab.eg@gmail.com">hima.azab.eg@gmail.com</a>
-    </p>
+      <div class="actions" role="group" aria-label="Primary actions">
+        <a class="btn btn-primary" href="mailto:hima.azab.eg@gmail.com">
+          Request license
+        </a>
+        <a class="btn btn-outline" href="privacy.html">Privacy Policy</a>
+        <a class="btn btn-outline" href="delete.html">Delete Account</a>
+      </div>
 
-    <h2>Policies</h2>
-    <a class="btn" href="privacy.html">Privacy Policy</a>
-    <a class="btn" href="delete.html">Delete Account</a>
-  </main>
+      <p class="meta">For Play reviewers: request a test license via email and we'll provide temporary credentials.</p>
+    </section>
 
-  <footer>
-    © 2025 SGMS · Built by Hima Azab
-  </footer>
+    <aside class="hero-visual" aria-label="SGMS preview and logo">
+      <div class="logo-wrap">
+        <div class="logo-box" aria-hidden="true">
+          <!-- Inline animated SVG logo (replaceable) -->
+          <svg class="logo-svg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+            <!-- circle backdrop -->
+            <defs>
+              <linearGradient id="g1" x1="0" x2="1">
+                <stop offset="0" stop-color="#ffffff" stop-opacity="0.18"/>
+                <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <rect x="0" y="0" width="64" height="64" rx="12" fill="rgba(255,255,255,0.06)"></rect>
+
+            <!-- stylized S + G letter mark -->
+            <g transform="translate(8 8)" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="4">
+              <path d="M6 6 C14 0, 30 0, 32 10 C34 20, 20 20, 14 26" stroke="#fff" opacity="0.95"></path>
+              <path d="M40 46 C30 52, 14 52, 10 42 C6 32, 20 32, 26 26" stroke="#fff" opacity="0.6" transform="translate(-6 -6)"></path>
+            </g>
+          </svg>
+        </div>
+        <div>
+          <div class="logo-title">SGMS</div>
+          <div style="font-size:13px;color:var(--muted)">Collaboration • Courses • Insights</div>
+        </div>
+      </div>
+
+      <div class="hero-canvas" aria-hidden="true">
+        <div class="floating-grid" role="presentation">
+          <div class="card-sample">
+            <h4>Project Alpha</h4>
+            <p>3 members · active</p>
+          </div>
+          <div class="card-sample">
+            <h4>Course: Supply KPIs</h4>
+            <p>7 modules · progress 34%</p>
+          </div>
+          <div class="card-sample">
+            <h4>Chat</h4>
+            <p>Messages (team-only)</p>
+          </div>
+          <div class="card-sample">
+            <h4>Release Notes</h4>
+            <p>v1.2.0 · stable</p>
+          </div>
+        </div>
+      </div>
+
+      <p style="font-size:12px;color:var(--muted);margin-top:12px">Built with Flutter • Android, Web, Desktop</p>
+    </aside>
+  </div>
+
+  <a class="sr" href="#sgms-heading">Skip to content</a>
+
+  <script>
+    // simple entrance animation: fade-in children
+    document.addEventListener('DOMContentLoaded', ()=> {
+      document.querySelectorAll('.wrap > *').forEach((el,i)=>{
+        el.style.opacity = 0;
+        el.style.transform = 'translateY(8px)';
+        setTimeout(()=> {
+          el.style.transition = 'opacity .45s ease, transform .45s ease';
+          el.style.opacity = 1;
+          el.style.transform = 'translateY(0)';
+        }, 120 + i*90);
+      });
+    });
+  </script>
 </body>
 </html>
